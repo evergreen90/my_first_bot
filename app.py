@@ -1,4 +1,5 @@
 import os
+import random
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -64,10 +65,9 @@ def handle_message(event):
     ]
 
     # ランダムに1つ選ぶ
-    reply_text = random.choice(responses)
+    reply_txt = random.choice(responses)
 
-    # 選んだテキストを返す
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text))
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_txt))
 
 
 if __name__ == "__main__":
