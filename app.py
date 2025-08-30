@@ -1,5 +1,6 @@
 import os
 import random
+import csv
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -39,37 +40,39 @@ def callback():
     return "OK"
 
 
+def load_responses_from_csv():
+    """CSVファイルから返答データを読み込み"""
+    responses = []
+    csv_file = "responses.csv"
+
+    try:
+        with open(csv_file, "r", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                responses.append(row["message"])
+        return responses
+    except FileNotFoundError:
+        print(f"CSVファイル '{csv_file}' が見つかりません。")
+        return []
+    except Exception as e:
+        print(f"CSVファイル読み込みエラー: {e}")
+        return []
+
+
+def get_random_response():
+    """CSVファイルからランダムな返答を取得"""
+    responses = load_responses_from_csv()
+
+    if responses:
+        return random.choice(responses)
+    else:
+        return "返答データが見つかりませんでした。"
+
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    # ランダムに返したい言葉のリスト
-    responses = [
-        "そうだね、プロテインだね",
-        "筋肉は裏切らない",
-        "ダンベルはずっと待っててくれる。ダンベルはズッ友",
-        "寝ろ。",
-        "覚えておいて。君は自由だ",
-        "筋トレしよう",
-        "なんとかなる",
-        "鍛えて裏切らないもの。直感と筋肉",
-        "筋肉留学。やー",
-        "お金は使ったらなくなるけど、筋肉は一生の財産になる。",
-        "筋肉の痛みは成長の印",
-        "筋肉に聞いてみな",
-        "きつくても辛くない!きつくても楽しい!",
-        "大きな筋肉に、小さな悩みは宿らない",
-        "筋肉はキッチンで作られる",
-        "アルコールで消える程度の筋肉はいらない",
-        "ジムに来るまでが筋トレだ",
-        "休むこともまたトレーニング",
-        "筋肉というのはね、自分より強いものを倒す柔らかい武器だよ",
-        "ベストは尽くすものではなく、超えるもの",
-        "鍛えよう、鍛えよう、真摯に鍛えよう。最高の自分を創り上げよう",
-        
-
-    ]
-
-    # ランダムに1つ選ぶ
-    reply_txt = random.choice(responses)
+    # CSVファイルからランダムな返答を取得
+    reply_txt = get_random_response()
 
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_txt))
 
