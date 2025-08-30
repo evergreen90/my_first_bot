@@ -40,7 +40,34 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=event.message.text))
+    # ランダムに返したい言葉のリスト
+    responses = [
+        "そうだね、プロテインだね",
+        "筋肉は裏切らない",
+        "ダンベルはずっと待っててくれる。ダンベルはズッ友",
+        "寝ろ。",
+        "覚えておいて。君は自由だ",
+        "筋トレしよう",
+        "なんとかなる",
+        "鍛えて裏切らないもの。直感と筋肉",
+        "筋肉留学。やー",
+        "お金は使ったらなくなるけど、筋肉は一生の財産になる。",
+        "筋肉の痛みは成長の印",
+        "筋肉に聞いてみな",
+        "きつくても辛くない!きつくても楽しい!",
+        "大きな筋肉に、小さな悩みは宿らない",
+        "筋肉はキッチンで作られる",
+        "アルコールで消える程度の筋肉はいらない",
+        "ジムに来るまでが筋トレだ",
+        "休むこともまたトレーニング",
+
+    ]
+
+    # ランダムに1つ選ぶ
+    reply_text = random.choice(responses)
+
+    # 選んだテキストを返す
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text))
 
 
 if __name__ == "__main__":
